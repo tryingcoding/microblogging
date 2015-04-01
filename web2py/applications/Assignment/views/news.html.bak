@@ -1,0 +1,12 @@
+<ul style="list-style: none;">
+          {{
+            out = ''
+            for row in row_list:
+                out += '<li><div style="padding: 0 0 0 100px; position: relative"><a href="#" style="color:green; font-family:verdana; font-size:130%">'
+                out += ('<img alt="" border="1" height="100" width="100" src="' + row['image_link'] +  '" style="left: 0; position: absolute; top: 0">')
+                out += ('     ' + row['title'])
+                out += '</a></div></li><br><br><br>'
+            pass
+          }}
+          {{=XML(out)}}
+</ul>

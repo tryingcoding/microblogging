@@ -20,3 +20,6 @@ db.define_table('comments',Field('time_stamp',  'datetime', default=request.now,
                         Field('news_id', 'reference news'))
 
 db.define_table('date_string',Field('date_string', 'string'))
+
+auth.messages.logged_in = None
+auth.messages.logged_out = None

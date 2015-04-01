@@ -59,31 +59,31 @@ div.error { background-color: red; color: white; padding: 3px; }
    </div>
    <!-- end content -->
    <!-- start sidebar -->
+   {{if sidebar_enabled:}}
    <div id="sidebar">
     <ul>
-     <li id="search">
-      <h2>
-       <b class="text1">
-        Search
-       </b>
-      </h2>
-      <form method="get" action="">
-       <fieldset>
-        <input type="text" id="s" name="s" value="" />
-        <input type="submit" id="x" value="Search" />
-       </fieldset>
-      </form>
-     </li>
      <li>
       <h2>
        <strong>
         {{=T("Trending")}}
        </strong>
       </h2>
-      {{=XML(trending)}}
+      <ul style="list-style: none;">
+          {{
+            out = ''
+            for row in row_list:
+                out += '<li><div style="padding: 0 0 0 100px; position: relative"><a href="#" onClick="jQuery(\'.flash\').html(\'Sign in to view or participate in discussion!\').slideDown().delay(1000).fadeOut()" style="color:green; font-family:verdana; font-size:100%">'
+                out += ('<img alt="" border="1" height="80" width="80" src="' + row['image_link'] +  '" style="left: 0; position: absolute; top: 0">')
+                out += ('     ' + row['title'])
+                out += '</a></div></li><br><br>'
+            pass
+          }}
+          {{=XML(out)}}
+      </ul>
      </li>
     </ul>
    </div>
+   {{pass}}
    <!-- end sidebar -->
    <div style="clear: both;">
     &nbsp;

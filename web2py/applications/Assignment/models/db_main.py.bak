@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-db.define_table('news',Field('time_stamp',  'datetime', default=request.now, update=request.now, required=True),
+db.define_table('news',Field('time_stamp',  'datetime', default=request.now, update=request.now),
                         Field('title','string', required=True, notnull=True),
                         Field('link', 'string', required=True, notnull=True),
                         Field('image_link', 'string', default='http://timesofindia.indiatimes.com/photo/34824568.cms'))

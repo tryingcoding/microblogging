@@ -29,8 +29,8 @@ def index():
         response.cookies['mycookie'] = auth.user.id
         response.cookies['mycookie']['expires'] = 24 * 3600
         response.cookies['mycookie']['path'] = '/'
-    out = news_index()
-    return dict(message=T('Hello World'), trending = out)
+    row_list = news()
+    return dict(message=T('Hello World'), row_list = row_list)
 
 
 def user():
@@ -48,8 +48,8 @@ def user():
         @auth.requires_permission('read','table name',record_id)
     to decorate functions that need access control
     """
-    out = news()
-    return dict(form=auth(), trending = out)
+    row_list = news()
+    return dict(form=auth(), row_list = row_list)
 
 
 @cache.action()
@@ -108,34 +108,9 @@ def news():
             link = field['link'].strip().split(';')[-1]
             title = field['title']
             db.news.insert(title=title,link=link,image_link=image_link)
-            db.commit()
-    out = '<ul style="list-style: none;">\n'
-    for field in d['entries']:
-        out += '<li><a href="#" onClick="jQuery(\'.flash\').html(\'Sign in to view or participate in discussion!\').slideDown().delay(1000).fadeOut()" style="color:green; font-family:verdana; font-size:100%">'
-        out += (str(tags[0]).strip()[:-1] + ' align = middle>')
-        out += ('     ' + field['title'])
-        #out += '<li>'
-        #out += field['description']
-        #out += '</li>'
-        out += '</a></li>'
-    out += '</ul>'
-    
-    return out
+        db.commit()
+    sel=[db.news['title'], db.news['link'], db.news['image_link']]
+    rows = db(db.news.id > 0).select(*sel, orderby=~db.news.id, limitby=(0,10))
 
-def news_index():
-    """
-    fetch news from rss
-    """
-    feedparser = local_import('feedparser')
-    from BeautifulSoup import BeautifulSoup
-    d = feedparser.parse('http://news.google.com/news?pz=1&cf=all&ned=in&hl=en&output=rss')
-    out = '<ul style="list-style: none;">\n'
-    for field in d['entries']:
-        out += '<li><a href="#" style="color:green; font-family:verdana; font-size:130%">'
-        soup = BeautifulSoup(field['description'])
-        tags=soup.findAll('img')
-        out += (str(tags[0]).strip()[:-1] + ' align = middle>')
-        out += ('     ' + field['title'])
-        out += '</a></li><br>'
-    out += '</ul>'
-    return out
+    row_list = rows.as_list()
+    return row_list
