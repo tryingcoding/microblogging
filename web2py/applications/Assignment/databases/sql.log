@@ -53,3 +53,52 @@ CREATE TABLE auth_cas(
     renew CHAR(1)
 );
 success!
+timestamp: 2015-04-01T00:01:29.621560
+CREATE TABLE news(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_stamp TIMESTAMP,
+    title CHAR(512),
+    link CHAR(512),
+    image_link CHAR(512)
+);
+success!
+timestamp: 2015-04-01T00:01:29.800134
+CREATE TABLE posts(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_stamp TIMESTAMP,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    body TEXT,
+    upvotes INTEGER,
+    downvotes INTEGER,
+    news_id INTEGER REFERENCES news (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2015-04-01T00:08:51.696926
+CREATE TABLE comments(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_stamp TIMESTAMP,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    body TEXT,
+    upvotes INTEGER,
+    downvotes INTEGER,
+    news_id INTEGER REFERENCES news (id) ON DELETE CASCADE
+);
+success!
+success!
+success!
+success!
+success!
+timestamp: 2015-04-01T01:11:47.458348
+CREATE TABLE date_string(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date_string CHAR(512)
+);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!

@@ -87,14 +87,31 @@ def news():
     """
     fetch news from rss
     """
-    feedparser = local_import('feedparser')
-    from BeautifulSoup import BeautifulSoup
-    d = feedparser.parse('http://news.google.com/news?pz=1&cf=all&ned=in&hl=en&output=rss')
+    from datetime import datetime
+    currentDay = datetime.now().day
+    currentMonth = datetime.now().month
+    currentYear = datetime.now().year
+    currentDate = str(currentDay) + '_' + str(currentMonth) + '_' + str(currentYear)
+    sel=[db.date_string['date_string']]
+    row=db(db.date_string.id == 24).select(*sel).first() # note the *
+    storedDate = row.date_string
+    if storedDate != currentDate:
+        db(db.date_string.id == 24).update(date_string=currentDate)
+        db.commit()
+        feedparser = local_import('feedparser')
+        from BeautifulSoup import BeautifulSoup
+        d = feedparser.parse('http://news.google.com/news?pz=1&cf=all&ned=in&hl=en&output=rss')
+        for field in d['entries']:
+            soup = BeautifulSoup(field['description'])
+            tags=soup.findAll('img')
+            image_link = tags[0]['src']
+            link = field['link'].strip().split(';')[-1]
+            title = field['title']
+            db.news.insert(title=title,link=link,image_link=image_link)
+            db.commit()
     out = '<ul style="list-style: none;">\n'
     for field in d['entries']:
         out += '<li><a href="#" onClick="jQuery(\'.flash\').html(\'Sign in to view or participate in discussion!\').slideDown().delay(1000).fadeOut()" style="color:green; font-family:verdana; font-size:100%">'
-        soup = BeautifulSoup(field['description'])
-        tags=soup.findAll('img')
         out += (str(tags[0]).strip()[:-1] + ' align = middle>')
         out += ('     ' + field['title'])
         #out += '<li>'
@@ -102,6 +119,7 @@ def news():
         #out += '</li>'
         out += '</a></li>'
     out += '</ul>'
+    
     return out
 
 def news_index():
