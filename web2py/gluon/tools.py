@@ -1330,7 +1330,7 @@ class Auth(object):
             login_onfail = [],
             login_methods = [self],
             login_form = self,
-            logout_next = url_login,
+            logout_next = url_index,
             logout_onlogout = None,
             register_next = url_index,
             register_onvalidation = [],
@@ -2636,7 +2636,10 @@ class Auth(object):
         """
         Logouts and redirects to login
         """
-
+        #delete cookie
+        current.response.cookies['mycookie'] = 'invalid' 
+        current.response.cookies['mycookie']['expires'] = -10 
+        current.response.cookies['mycookie']['path'] = '/'
         # Clear out 2-step authentication information if user logs
         # out. This information is also cleared on successful login.
         self._reset_two_factor_auth(current.session)

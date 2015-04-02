@@ -21,7 +21,8 @@ def index():
         if request.cookies.has_key('mycookie'):
             value = request.cookies['mycookie'].value
             value = int(value)
-            auth.user = db(db.auth_user.id==value).select()[0]
+            user = db.auth_user(value)
+            auth.login_user(user)
             #redirect(URL('user'))
         else:
             redirect(URL('user'))
@@ -109,8 +110,25 @@ def news():
             title = field['title']
             db.news.insert(title=title,link=link,image_link=image_link)
         db.commit()
-    sel=[db.news['title'], db.news['link'], db.news['image_link']]
+    sel=[db.news['id'], db.news['title'], db.news['link'], db.news['image_link']]
     rows = db(db.news.id > 0).select(*sel, orderby=~db.news.id, limitby=(0,10))
 
     row_list = rows.as_list()
     return row_list
+
+def feed():
+    """
+    shows posts on a news
+    """
+    from datetime import datetime
+    news_id = request.vars.id
+    rows = db(db.posts.news_id == news_id).select(db.posts.ALL, orderby=(db.posts.upvotes-db.posts.downvotes - (db.posts.time_stamp)))
+    row_list = rows.as_list()
+    return dict(news_vars = request.vars, row_list = row_list)
+
+def blog():
+    """
+    Writes Blog Post
+    """
+    db.posts.insert(user_id=auth.user.id, body=request.vars.blog, news_id=request.vars.id)
+    redirect(URL('default','feed',vars=dict(id=request.vars.id)))

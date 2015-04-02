@@ -2,7 +2,7 @@
           {{
             out = ''
             for row in row_list:
-                out += '<li><div style="padding: 0 0 0 100px; position: relative"><a href="#" style="color:green; font-family:verdana; font-size:130%">'
+                out += ('<li><div style="padding: 0 0 0 120px; position: relative"><a href="' + URL('default','feed', vars=dict(id=row['id'])) + '" style="color:green; font-family:verdana; font-size:130%">')
                 out += ('<img alt="" border="1" height="100" width="100" src="' + row['image_link'] +  '" style="left: 0; position: absolute; top: 0">')
                 out += ('     ' + row['title'])
                 out += '</a></div></li><br><br><br>'

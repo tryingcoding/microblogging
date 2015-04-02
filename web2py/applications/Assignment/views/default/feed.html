@@ -1,0 +1,13 @@
+{{sidebar_enabled=False}}
+{{extend 'layout.html'}}
+
+{{ out = '<form action="' + URL('default','blog',vars= dict(id=news_vars['id'])) + '" method="post">What do you think?<br>' + \
+         '<textarea name="blog" maxlength=140 style="width: 600px; height: 50px;"></textarea><br><input type="submit" value="Post"></form><br>'
+   for row in row_list:
+       out += ('<div class="post"><h4 class="title">' + auth.user.first_name + ' ' + auth.user.last_name + '</h4><div class="entry"><p style="font-size:20px">')
+       out += row['body']
+       out += '</p></div><div class="meta"><p class="links"><a href="#" class="more">Read full article</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="comments">View Comments</a></p></div></div>'
+   pass
+}}
+
+{{=XML(out)}}
