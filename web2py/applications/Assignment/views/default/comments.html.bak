@@ -1,0 +1,7 @@
+{{for comment in comments:}}
+<div class="comments">
+  On {{=comment.time_stamp}} {{=comment.user_id}}
+  says <span class="comment_body">{{=comment.body}}</span>
+</div>
+{{pass}}
+{{=form}}

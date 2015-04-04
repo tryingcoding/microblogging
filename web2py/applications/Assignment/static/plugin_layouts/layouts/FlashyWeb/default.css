@@ -242,7 +242,7 @@ input, textarea, select {
 	font-size: 9px;
 }
 
-.post .meta .comments {
+.post .meta .view_comments {
 	padding: 5px 10px;
 	text-transform: uppercase;
 	text-decoration: none;

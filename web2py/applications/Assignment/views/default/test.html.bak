@@ -1,0 +1,3 @@
+{{sidebar_enabled=False}}
+{{extend 'layout.html'}}
+{{=LOAD('default','comments.html',ajax_trap=True)}}

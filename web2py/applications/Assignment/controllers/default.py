@@ -122,7 +122,7 @@ def feed():
     """
     from datetime import datetime
     news_id = request.vars.id
-    rows = db(db.posts.news_id == news_id).select(db.posts.ALL, orderby=(db.posts.upvotes-db.posts.downvotes - (db.posts.time_stamp)))
+    rows = db((db.posts.news_id == news_id) & (db.auth_user.id == db.posts.user_id)).select(orderby=~db.posts.time_stamp)
     row_list = rows.as_list()
     return dict(news_vars = request.vars, row_list = row_list)
 
@@ -131,4 +131,28 @@ def blog():
     Writes Blog Post
     """
     db.posts.insert(user_id=auth.user.id, body=request.vars.blog, news_id=request.vars.id)
-    redirect(URL('default','feed',vars=dict(id=request.vars.id)))
+    redirect(URL('default','feed',vars=dict(request.vars)))
+
+def comments():
+    db.comments.time_stamp.writable = False
+    db.comments.time_stamp.readable = False
+    db.comments.user_id.writable = False
+    db.comments.user_id.readable = False
+    db.comments.upvotes.writable = False
+    db.comments.upvotes.readable = False
+    db.comments.downvotes.writable = False
+    db.comments.downvotes.readable = False
+    db.comments.post_id.writable = False
+    db.comments.post_id.readable = False
+    db.comments.post_id.default = request.vars.post_id
+    db.comments.user_id.default = auth.user.id
+    
+    form = SQLFORM(db.comments).process()
+    response.flash = None
+    session.flash = None
+    form.element('textarea[name=body]')['_style'] = 'width:250px;height:50px;'
+    return dict(form=form,
+                comments=db((db.comments.post_id == request.vars.post_id) & (db.comments.user_id == db.auth_user.id)).select())
+
+def test():
+    return dict()

@@ -17,7 +17,7 @@ db.define_table('comments',Field('time_stamp',  'datetime', default=request.now,
                         Field('body','text', length = 140, required=True, notnull=True),
                         Field('upvotes', 'integer', default=0),
                         Field('downvotes', 'integer', default=0),
-                        Field('news_id', 'reference news'))
+                        Field('post_id', 'reference posts'))
 
 db.define_table('date_string',Field('date_string', 'string'))
 

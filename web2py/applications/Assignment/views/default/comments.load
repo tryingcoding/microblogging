@@ -1,0 +1,7 @@
+{{for comment in comments:}}
+<div class="comments">
+  On {{=comment.comments.time_stamp}} <b>{{=comment.auth_user.first_name}} {{=comment.auth_user.last_name}}</b>
+  says <blockquote class="comment_body"><b>{{=comment.comments.body}}</b></blockquote>
+</div>
+{{pass}}
+{{=form}}
