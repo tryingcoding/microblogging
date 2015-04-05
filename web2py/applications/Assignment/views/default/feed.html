@@ -17,7 +17,13 @@
    for row in row_list:
        out += ('<div class="post"><h4 class="title">' + row['auth_user']['first_name'] + ' ' + row['auth_user']['last_name'] + '</h4><div class="entry"><p style="font-size:20px">')
        out += row['posts']['body']
-       out += '</p></div><div class="meta"><p class="links">'
+       out += '</p>'
+       out += '<span id="votes_' + str(row['posts']['id']) + '">' + str(row['posts']['votes']) + '</span>' + \
+              '&nbsp;&nbsp;&nbsp;' + \
+              '<button id="plus" onclick="ajax(\'' + URL('vote',args=(row['posts']['id'],'plus')) + '\',[],\':eval\')">plus</button>' + \
+              '<button id="minus" onclick="ajax(\'' + URL('vote',args=(row['posts']['id'],'minus')) + '\',[],\':eval\')">minus</button>'
+       
+       out += '</div><div class="meta"><p class="links">'
 out += '&nbsp;&nbsp;&nbsp;&nbsp;<a href="#/" class="view_comments" onclick="$( \'.comments_' + str(row['posts']['id'])+ '\' ).toggle();">View Comments</a></p></div></div>'
        
        out += '<div class="comments_' + str(row['posts']['id'])+ '\" style="display: none">'

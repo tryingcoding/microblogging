@@ -122,7 +122,7 @@ def feed():
     """
     from datetime import datetime
     news_id = request.vars.id
-    rows = db((db.posts.news_id == news_id) & (db.auth_user.id == db.posts.user_id)).select(orderby=~db.posts.time_stamp)
+    rows = db((db.posts.news_id == news_id) & (db.auth_user.id == db.posts.user_id)).select(orderby=~(db.posts.time_stamp + db.posts.votes))
     row_list = rows.as_list()
     return dict(news_vars = request.vars, row_list = row_list)
 
@@ -130,7 +130,11 @@ def blog():
     """
     Writes Blog Post
     """
-    db.posts.insert(user_id=auth.user.id, body=request.vars.blog, news_id=request.vars.id)
+    if type(request.vars.blog) is list:
+        body = request.vars.blog[-1]
+    else:
+        body = request.vars.blog
+    db.posts.insert(user_id=auth.user.id, body=body, news_id=request.vars.id)
     redirect(URL('default','feed',vars=dict(request.vars)))
 
 def comments():
@@ -156,3 +160,24 @@ def comments():
 
 def test():
     return dict()
+
+
+def vote():
+    if request.env.request_method!='POST': raise HTTP(400)
+    post_id, mode = request.args(0), request.args(1)
+    post = db.posts(id=post_id)
+    vote = db.vote(posted_by=auth.user.id,post_id=post_id)
+    votes = post.votes
+    value = (mode=='plus') and +1 or -1
+    if vote and value*vote.up_down==1:
+        message = 'you voted already'
+    else:
+        if vote:
+            votes += value - vote.up_down
+            vote.update_record(up_down=value)
+        else:
+            votes += value
+            db.vote.insert(up_down=value,posted_by=auth.user.id,posted_on=request.now,post_id=post_id)
+        post.update_record(votes=votes)
+        message = 'vote recorded'
+    return "$('#votes_" + str(post_id) + "').html('%s');" % (votes)
